@@ -1,0 +1,61 @@
+# PHP
+*.log
+*.cache
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Environment files (kalo nanti ada)
+.env
+.env.local
+
+# Composer (kalo nanti pake composer)
+/vendor/
+composer.lock
+
+# Node modules (kalo nanti pake npm)
+node_modules/
+package-lock.json
+
+# Upload folder (kalo nanti ada upload file)
+/uploads/*
+!/uploads/.gitkeep
+
+# Cache folder
+/cache/*
+!/cache/.gitkeep
+
+# Session folder
+/sessions/*
+!/sessions/.gitkeep
+
+# Database backup
+*.sql
+*.sqlite
+*.db
+
+# Logs
+/logs/*
+!/logs/.gitkeep
+error.log
+access.log
