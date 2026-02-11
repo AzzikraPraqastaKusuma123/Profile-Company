@@ -13,6 +13,10 @@ require_once 'data/content.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
     <header class="site-header">
@@ -154,34 +158,120 @@ require_once 'data/content.php';
                     <h2><?php echo $map_data['title']; ?></h2>
                     <p style="color: var(--color-text-light);"><?php echo $map_data['desc']; ?></p>
                 </div>
+                
                 <div class="map-tabs">
-                    <?php 
-                    $first_tab = true;
-                    foreach ($map_categories as $key => $label) { 
-                        $active_tab = $first_tab ? 'active' : '';
-                        $first_tab = false;
+                    <?php foreach ($map_categories as $key => $label) { 
+                         $isActive = ($key === 'all') ? 'active' : '';
                     ?>
-                        <div class="map-tab <?php echo $active_tab; ?>" data-category="<?php echo $key; ?>"><?php echo $label; ?></div>
+                        <button class="<?php echo $isActive; ?>" data-type="<?php echo $key; ?>">
+                            <?php echo $label; ?>
+                            <sup id="c-<?php echo $key; ?>">0</sup>
+                        </button>
                     <?php } ?>
                 </div>
-                <div class="map-wrapper">
-                    <div class="map-controls">
-                        <button id="zoom-in" title="Zoom In">+</button>
-                        <button id="zoom-out" title="Zoom Out">−</button>
-                    </div>
-                    <div class="interactive-map" id="map-container" style="background-image: url('<?php echo BASE_URL . $map_data['image']; ?>'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-                        <?php foreach ($map_points as $point) { ?>
-                            <div class="map-point" 
-                                 data-category="<?php echo $point['cat']; ?>" 
-                                 style="top: <?php echo $point['top']; ?>; left: <?php echo $point['left']; ?>;"
-                                 title="<?php echo $point['name']; ?>">
-                                <div class="map-tooltip"><?php echo $point['name']; ?></div>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
+
+                <div id="map" style="width: 100%; height: 600px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); z-index: 1;"></div>
             </div>
         </section>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var map = L.map('map', {
+                scrollWheelZoom: false 
+            }).setView([20, 0], 2);
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+
+            var markersLayer = L.layerGroup().addTo(map);
+
+            function getMarkerStyle() {
+                return {
+                    radius: 6,
+                    fillColor: "#ffffff",
+                    color: "#6a1bb9", 
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 1 
+                };
+            }
+
+            async function loadStats() {
+                try {
+                    const response = await fetch('api/stats.php');
+                    const stats = await response.json();
+                    
+                    for (const [key, count] of Object.entries(stats)) {
+                        const el = document.getElementById('c-' + key);
+                        if (el) el.textContent = count;
+                    }
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                }
+            }
+
+            async function loadLocations(type) {
+                try {
+                    const response = await fetch('api/locations.php?type=' + type);
+                    const data = await response.json();
+                    
+                    markersLayer.clearLayers();
+                    var bounds = [];
+
+                    data.items.forEach(function(item) {
+                        var lat = parseFloat(item.lat);
+                        var lng = parseFloat(item.lng);
+                        
+                        var marker = L.circleMarker([lat, lng], getMarkerStyle());
+                        
+                        var popupContent = `
+                            <div style="font-family: 'Montserrat', sans-serif; min-width: 150px;">
+                                <strong style="color: #4A0E77; display:block; margin-bottom:4px;">${item.name}</strong>
+                                <span style="font-size: 12px; color: #555;">${item.city}, ${item.country}</span>
+                            </div>
+                        `;
+                        
+                        marker.bindPopup(popupContent, {
+                            className: 'custom-popup'
+                        });
+
+                        marker.addTo(markersLayer);
+                        bounds.push([lat, lng]);
+                    });
+
+                    if (bounds.length > 0) {
+                        map.flyToBounds(bounds, {
+                            padding: [50, 50],
+                            duration: 1.5,
+                            easeLinearity: 0.25
+                        });
+                    } else {
+                        map.flyTo([20, 0], 2, { duration: 1.5 });
+                    }
+
+                } catch (error) {
+                    console.error('Error loading locations:', error);
+                }
+            }
+
+            const tabs = document.querySelectorAll('.map-tabs button');
+            tabs.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const type = this.getAttribute('data-type');
+                    loadLocations(type);
+                });
+            });
+
+            loadStats();
+            loadLocations('all');
+        });
+        </script>
         <section class="talks-section" style="position: relative; overflow: hidden; min-height: 600px; background: #fff;">
             <?php foreach ($talks_data as $index => $talk) { 
                 $isActive = ($index === 0) ? 'active' : '';

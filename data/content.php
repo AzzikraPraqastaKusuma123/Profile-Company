@@ -70,19 +70,19 @@ $map_categories = array(
 );
 
 $map_points = array(
-    array('top' => '36%', 'left' => '28%', 'cat' => 'offices', 'name' => 'Miami Office'), 
-    array('top' => '21%', 'left' => '50%', 'cat' => 'offices', 'name' => 'London HQ'),
-    array('top' => '17%', 'left' => '57%', 'cat' => 'offices', 'name' => 'Tallinn HQ'),
-    array('top' => '48%', 'left' => '78%', 'cat' => 'offices', 'name' => 'Kuala Lumpur Office'),
-    array('top' => '31%', 'left' => '18%', 'cat' => 'stations', 'name' => 'Los Angeles Station'),
-    array('top' => '22%', 'left' => '53%', 'cat' => 'stations', 'name' => 'Berlin Station'),
-    array('top' => '23%', 'left' => '55%', 'cat' => 'stations', 'name' => 'Warsaw Station'), 
-    array('top' => '28%', 'left' => '61%', 'cat' => 'stations', 'name' => 'Tbilisi Station'), 
-    array('top' => '52%', 'left' => '79%', 'cat' => 'stations', 'name' => 'Jakarta Station'), 
-    array('top' => '23%', 'left' => '51%', 'cat' => 'hubs', 'name' => 'Amsterdam Hub'),
-    array('top' => '19%', 'left' => '53%', 'cat' => 'hubs', 'name' => 'Copenhagen Hub')
+    array('lat' => 25.7617, 'lng' => -80.1918, 'cat' => 'offices', 'name' => 'Miami Office', 'city' => 'Miami', 'country' => 'USA'), 
+    array('lat' => 51.5074, 'lng' => -0.1278, 'cat' => 'offices', 'name' => 'London HQ', 'city' => 'London', 'country' => 'UK'),
+    array('lat' => 59.4370, 'lng' => 24.7536, 'cat' => 'offices', 'name' => 'Tallinn HQ', 'city' => 'Tallinn', 'country' => 'Estonia'),
+    array('lat' => 3.1390, 'lng' => 101.6869, 'cat' => 'offices', 'name' => 'Kuala Lumpur Office', 'city' => 'Kuala Lumpur', 'country' => 'Malaysia'),
+    array('lat' => 34.0522, 'lng' => -118.2437, 'cat' => 'line_stations', 'name' => 'Los Angeles Station', 'city' => 'Los Angeles', 'country' => 'USA'),
+    array('lat' => 52.5200, 'lng' => 13.4050, 'cat' => 'line_stations', 'name' => 'Berlin Station', 'city' => 'Berlin', 'country' => 'Germany'),
+    array('lat' => 52.2297, 'lng' => 21.0122, 'cat' => 'line_stations', 'name' => 'Warsaw Station', 'city' => 'Warsaw', 'country' => 'Poland'), 
+    array('lat' => 41.7151, 'lng' => 44.8271, 'cat' => 'line_stations', 'name' => 'Tbilisi Station', 'city' => 'Tbilisi', 'country' => 'Georgia'), 
+    array('lat' => -6.2088, 'lng' => 106.8456, 'cat' => 'line_stations', 'name' => 'Jakarta Station', 'city' => 'Jakarta', 'country' => 'Indonesia'), 
+    array('lat' => 52.3676, 'lng' => 4.9041, 'cat' => 'engine_hubs', 'name' => 'Amsterdam Hub', 'city' => 'Amsterdam', 'country' => 'Netherlands'),
+    array('lat' => 55.6761, 'lng' => 12.5683, 'cat' => 'engine_hubs', 'name' => 'Copenhagen Hub', 'city' => 'Copenhagen', 'country' => 'Denmark'),
+    array('lat' => 31.2304, 'lng' => 121.4737, 'cat' => 'hangxin_bases', 'name' => 'Shanghai Base', 'city' => 'Shanghai', 'country' => 'China')
 );
-
 $team_data = array(
     'title' => 'Join our team',
     'desc' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
